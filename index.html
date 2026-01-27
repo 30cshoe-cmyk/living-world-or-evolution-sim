@@ -10,51 +10,68 @@ body {
   margin: 0;
   height: 100vh;
   font-family: monospace;
-  color: #e6e1d8;
-  background:
-    radial-gradient(circle at top, #2a2a24, #12120f);
+  color: #e8eef5;
   display: flex;
   flex-direction: column;
+
+  /* Worn blue wallpaper */
+  background:
+    repeating-radial-gradient(
+      circle at 20% 30%,
+      rgba(255,255,255,0.03),
+      rgba(255,255,255,0.03) 2px,
+      transparent 2px,
+      transparent 40px
+    ),
+    linear-gradient(135deg, #1c2f45, #0f1d2e);
 }
 
-/* ========= WOOD THEME ========= */
-.wood {
+/* ========= WOOD SEPARATORS ONLY ========= */
+.wood-sep {
   background: linear-gradient(
     90deg,
-    #4b2e1a,
-    #5a3822,
-    #4b2e1a
+    #4a2c18,
+    #6b4328,
+    #4a2c18
   );
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.6);
+}
+
+/* ========= PANELS ========= */
+.panel {
+  background: rgba(10, 20, 30, 0.85);
+  backdrop-filter: blur(2px);
 }
 
 /* ========= TOP STATUS ========= */
 #status {
-  height: 80px;
-  padding: 12px 20px;
-  font-size: 16px;
+  height: 100px;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
-  gap: 30px;
-  border-bottom: 4px solid #3a2414;
+  gap: 40px;
+  font-size: 16px;
 }
 
-/* ========= MAIN LAYOUT ========= */
+#status-sep {
+  height: 6px;
+}
+
+/* ========= MAIN ========= */
 #main {
   flex: 1;
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 260px 6px 1fr;
 }
 
 /* ========= LEVERS ========= */
 #levers {
   padding: 16px;
-  border-right: 4px solid #3a2414;
 }
 
 #levers h3 {
   margin-top: 0;
-  color: #f0d9a6;
+  color: #b8d2ff;
 }
 
 .lever {
@@ -76,6 +93,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+
   background:
     repeating-linear-gradient(
       0deg,
@@ -96,24 +114,27 @@ body {
 #world-box {
   width: 95%;
   height: 95%;
-  border: 3px solid #3a2414;
+  border: 2px solid rgba(255,255,255,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #9a907f;
+  color: #9fb4d1;
   font-size: 18px;
 }
 
 /* ========= EVENTS ========= */
 #events {
-  height: 160px;
-  padding: 12px 20px;
-  border-top: 4px solid #3a2414;
+  height: 180px;
+  padding: 16px 24px;
   overflow: hidden;
 }
 
+#events-sep {
+  height: 6px;
+}
+
 .log {
-  animation: driftUp 40s linear infinite;
+  animation: driftUp 45s linear infinite;
 }
 
 @keyframes driftUp {
@@ -123,7 +144,7 @@ body {
 
 .log p {
   margin: 6px 0;
-  opacity: 0.9;
+  opacity: 0.85;
 }
 </style>
 </head>
@@ -131,18 +152,20 @@ body {
 <body>
 
 <!-- STATUS -->
-<div id="status" class="wood">
+<div id="status" class="panel">
   <div>Tick: 0</div>
   <div>Energy: Stable</div>
   <div>Magic: Low</div>
   <div>Biome: Softlands</div>
 </div>
 
+<div id="status-sep" class="wood-sep"></div>
+
 <!-- MAIN -->
 <div id="main">
 
   <!-- LEVERS -->
-  <div id="levers" class="wood">
+  <div id="levers" class="panel">
     <h3>World Levers</h3>
 
     <div class="lever">
@@ -166,6 +189,8 @@ body {
     </div>
   </div>
 
+  <div class="wood-sep"></div>
+
   <!-- WORLD -->
   <div id="world">
     <div id="world-box">
@@ -175,8 +200,10 @@ body {
 
 </div>
 
+<div id="events-sep" class="wood-sep"></div>
+
 <!-- EVENTS -->
-<div id="events" class="wood">
+<div id="events" class="panel">
   <div class="log">
     <p>• World initialized</p>
     <p>• Softlands stable</p>
@@ -188,3 +215,4 @@ body {
 
 </body>
 </html>
+
