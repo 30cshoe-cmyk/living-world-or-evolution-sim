@@ -1,129 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Living World</title>
+<meta charset="UTF-8">
+<title>Living World</title>
 
-  <style>
-    /* ----- GLOBAL ----- */
-    body {
-      margin: 0;
-      background: #0b0f14;
-      color: #cfd8e3;
-      font-family: monospace;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+<style>
+/* ========= GLOBAL ========= */
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: monospace;
+  color: #e6e1d8;
+  background:
+    radial-gradient(circle at top, #2a2a24, #12120f);
+  display: flex;
+  flex-direction: column;
+}
 
-    /* ----- STATUS BAR ----- */
-    #status {
-      padding: 8px 12px;
-      border-bottom: 1px solid #1e2633;
-      background: #0f1622;
-      font-size: 14px;
-    }
+/* ========= WOOD THEME ========= */
+.wood {
+  background: linear-gradient(
+    90deg,
+    #4b2e1a,
+    #5a3822,
+    #4b2e1a
+  );
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
+}
 
-    /* ----- MAIN LAYOUT ----- */
-    #main {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      grid-template-rows: 1fr;
-    }
+/* ========= TOP STATUS ========= */
+#status {
+  height: 80px;
+  padding: 12px 20px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  border-bottom: 4px solid #3a2414;
+}
 
-    /* ----- LEVERS ----- */
-    #levers {
-      border-right: 1px solid #1e2633;
-      padding: 12px;
-      background: #0d1420;
-    }
+/* ========= MAIN LAYOUT ========= */
+#main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+}
 
-    #levers h3 {
-      margin-top: 0;
-      font-size: 14px;
-      color: #9fb4ff;
-    }
+/* ========= LEVERS ========= */
+#levers {
+  padding: 16px;
+  border-right: 4px solid #3a2414;
+}
 
-    .lever {
-      margin-bottom: 10px;
-      padding: 6px;
-      border: 1px solid #1e2633;
-      background: #0b111b;
-    }
+#levers h3 {
+  margin-top: 0;
+  color: #f0d9a6;
+}
 
-    /* ----- WORLD ----- */
-    #world {
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background:
-        repeating-linear-gradient(
-          0deg,
-          #0b0f14,
-          #0b0f14 20px,
-          #0c121c 20px,
-          #0c121c 21px
-        ),
-        repeating-linear-gradient(
-          90deg,
-          #0b0f14,
-          #0b0f14 20px,
-          #0c121c 20px,
-          #0c121c 21px
-        );
-    }
+.lever {
+  margin-bottom: 14px;
+}
 
-    #world-box {
-      width: 90%;
-      height: 90%;
-      border: 1px solid #1e2633;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #5f6b85;
-    }
+.lever label {
+  display: block;
+  margin-bottom: 4px;
+}
 
-    /* ----- EVENTS ----- */
-    #events {
-      height: 120px;
-      border-top: 1px solid #1e2633;
-      padding: 8px 12px;
-      background: #0f1622;
-      font-size: 13px;
-      overflow-y: auto;
-    }
-  </style>
+.lever input {
+  width: 100%;
+}
+
+/* ========= WORLD ========= */
+#world {
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.03),
+      rgba(255,255,255,0.03) 1px,
+      transparent 1px,
+      transparent 24px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.03),
+      rgba(255,255,255,0.03) 1px,
+      transparent 1px,
+      transparent 24px
+    );
+}
+
+#world-box {
+  width: 95%;
+  height: 95%;
+  border: 3px solid #3a2414;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9a907f;
+  font-size: 18px;
+}
+
+/* ========= EVENTS ========= */
+#events {
+  height: 160px;
+  padding: 12px 20px;
+  border-top: 4px solid #3a2414;
+  overflow: hidden;
+}
+
+.log {
+  animation: driftUp 40s linear infinite;
+}
+
+@keyframes driftUp {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+.log p {
+  margin: 6px 0;
+  opacity: 0.9;
+}
+</style>
 </head>
 
 <body>
 
-  <div id="status">
-    Tick: 0 | Energy: Stable | Magic: Low
-  </div>
+<!-- STATUS -->
+<div id="status" class="wood">
+  <div>Tick: 0</div>
+  <div>Energy: Stable</div>
+  <div>Magic: Low</div>
+  <div>Biome: Softlands</div>
+</div>
 
-  <div id="main">
-    <div id="levers">
-      <h3>Levers</h3>
-      <div class="lever">Time Speed</div>
-      <div class="lever">Heat</div>
-      <div class="lever">Magic</div>
-      <div class="lever">Human Change Rate</div>
+<!-- MAIN -->
+<div id="main">
+
+  <!-- LEVERS -->
+  <div id="levers" class="wood">
+    <h3>World Levers</h3>
+
+    <div class="lever">
+      <label>Time Flow</label>
+      <input type="range" min="1" max="5" value="2">
     </div>
 
-    <div id="world">
-      <div id="world-box">
-        World Grid (Softlands)
-      </div>
+    <div class="lever">
+      <label>Heat</label>
+      <input type="range" min="0" max="100" value="50">
+    </div>
+
+    <div class="lever">
+      <label>Magic Pressure</label>
+      <input type="range" min="0" max="100" value="20">
+    </div>
+
+    <div class="lever">
+      <label>Human Adaptation Rate</label>
+      <input type="range" min="0" max="100" value="30">
     </div>
   </div>
 
-  <div id="events">
-    • World initialized<br>
-    • Softlands stable<br>
-    • No dominant species
+  <!-- WORLD -->
+  <div id="world">
+    <div id="world-box">
+      World Grid — Softlands
+    </div>
   </div>
+
+</div>
+
+<!-- EVENTS -->
+<div id="events" class="wood">
+  <div class="log">
+    <p>• World initialized</p>
+    <p>• Softlands stable</p>
+    <p>• Slime populations present</p>
+    <p>• No dominant species detected</p>
+    <p>• Environmental drift minimal</p>
+  </div>
+</div>
 
 </body>
 </html>
