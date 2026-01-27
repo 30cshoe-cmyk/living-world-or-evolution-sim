@@ -2,113 +2,114 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Living World – Prototype</title>
+  <title>Terrarium World</title>
+
   <style>
+    /* --- Base page style --- */
     body {
-      background: #111;
-      color: #ddd;
+      margin: 0;
+      height: 100vh;
+      display: flex;
       font-family: monospace;
+      background-color: #0e0f12;
+      color: #cfd3da;
+    }
+
+    /* --- Column layout --- */
+    .panel {
       padding: 12px;
+      box-sizing: border-box;
+    }
+
+    #levers {
+      width: 20%;
+      background-color: #14161c;
+      border-right: 1px solid #222;
+    }
+
+    #world {
+      width: 60%;
+      background-color: #0b0d11;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+      font-size: 14px;
+    }
+
+    #info {
+      width: 20%;
+      background-color: #14161c;
+      border-left: 1px solid #222;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- Lever list --- */
+    .lever {
+      margin-bottom: 12px;
+      opacity: 0.85;
+    }
+
+    /* --- Info panel split --- */
+    #stats {
+      flex: 1;
+      border-bottom: 1px solid #222;
+      font-size: 13px;
+    }
+
+    #whispers {
+      flex: 1;
+      font-size: 12px;
+      color: #aab0bb;
+    }
+
+    .stat {
+      margin-bottom: 6px;
+    }
+
+    .whisper {
+      margin-bottom: 8px;
+      opacity: 0.8;
     }
   </style>
 </head>
+
 <body>
-  <h2>Living World Prototype</h2>
-  <div id="status"></div>
 
-  <script>
-    /***********************
-     * CONFIG (speed knobs)
-     ***********************/
-    const TICKS_PER_SECOND = 2;      // base speed
-    const MAX_CATCHUP_TICKS = 200;   // safety cap
-    const SAVE_INTERVAL = 50;        // ticks
+  <!-- LEFT: LEVERS -->
+  <div id="levers" class="panel">
+    <div class="lever">Time Flow</div>
+    <div class="lever">Heat</div>
+    <div class="lever">Magic Density</div>
+    <div class="lever">Stability</div>
+    <div class="lever">Resource Flow</div>
+    <div class="lever">Sapience Pressure</div>
+  </div>
 
-    /***********************
-     * WORLD STATE
-     ***********************/
-    let world = {
-      tick: 0,
-      resources: {
-        energy: 1000
-      },
-      lastUpdate: Date.now()
-    };
+  <!-- CENTER: WORLD VIEW -->
+  <div id="world" class="panel">
+    <div>[ world view ]</div>
+  </div>
 
-    /***********************
-     * LOAD / SAVE
-     ***********************/
-    function loadWorld() {
-      const saved = localStorage.getItem("world_state");
-      if (saved) {
-        world = JSON.parse(saved);
-      }
-    }
+  <!-- RIGHT: INFO -->
+  <div id="info" class="panel">
+    <!-- STATS -->
+    <div id="stats">
+      <div class="stat">Tick: —</div>
+      <div class="stat">Avg Energy: —</div>
+      <div class="stat">Avg Heat: —</div>
+      <div class="stat">Avg Magic: —</div>
+      <div class="stat">Stability: —</div>
+      <div class="stat">Population: —</div>
+    </div>
 
-    function saveWorld() {
-      world.lastUpdate = Date.now();
-      localStorage.setItem("world_state", JSON.stringify(world));
-    }
+    <!-- WHISPERS -->
+    <div id="whispers">
+      <div class="whisper">The Softlands is calm.</div>
+      <div class="whisper">Life is beginning.</div>
+    </div>
+  </div>
 
-    /***********************
-     * CORE SIM STEP
-     ***********************/
-    function runTick() {
-      world.tick++;
-
-      // basic world drift (placeholder)
-      world.resources.energy += 1;
-      if (world.resources.energy > 2000) {
-        world.resources.energy = 2000;
-      }
-
-      if (world.tick % SAVE_INTERVAL === 0) {
-        saveWorld();
-      }
-    }
-
-    /***********************
-     * CATCH-UP LOGIC
-     ***********************/
-    function catchUp() {
-      const now = Date.now();
-      const elapsedSeconds = (now - world.lastUpdate) / 1000;
-      let ticksToRun = Math.floor(elapsedSeconds * TICKS_PER_SECOND);
-
-      if (ticksToRun > MAX_CATCHUP_TICKS) {
-        ticksToRun = MAX_CATCHUP_TICKS;
-      }
-
-      for (let i = 0; i < ticksToRun; i++) {
-        runTick();
-      }
-    }
-
-    /***********************
-     * MAIN LOOP
-     ***********************/
-    function startLoop() {
-      setInterval(() => {
-        runTick();
-        render();
-      }, 1000 / TICKS_PER_SECOND);
-    }
-
-    /***********************
-     * RENDER (TEMP)
-     ***********************/
-    function render() {
-      document.getElementById("status").innerText =
-        `Tick: ${world.tick}\n` +
-        `Energy: ${world.resources.energy}`;
-    }
-
-    /***********************
-     * BOOT
-     ***********************/
-    loadWorld();
-    catchUp();
-    startLoop();
-  </script>
 </body>
 </html>
