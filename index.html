@@ -2,113 +2,127 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Terrarium World</title>
+  <title>Living World</title>
 
   <style>
-    /* --- Base page style --- */
+    /* ----- GLOBAL ----- */
     body {
       margin: 0;
-      height: 100vh;
-      display: flex;
+      background: #0b0f14;
+      color: #cfd8e3;
       font-family: monospace;
-      background-color: #0e0f12;
-      color: #cfd3da;
-    }
-
-    /* --- Column layout --- */
-    .panel {
-      padding: 12px;
-      box-sizing: border-box;
-    }
-
-    #levers {
-      width: 20%;
-      background-color: #14161c;
-      border-right: 1px solid #222;
-    }
-
-    #world {
-      width: 60%;
-      background-color: #0b0d11;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #555;
-      font-size: 14px;
-    }
-
-    #info {
-      width: 20%;
-      background-color: #14161c;
-      border-left: 1px solid #222;
+      height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* --- Lever list --- */
+    /* ----- STATUS BAR ----- */
+    #status {
+      padding: 8px 12px;
+      border-bottom: 1px solid #1e2633;
+      background: #0f1622;
+      font-size: 14px;
+    }
+
+    /* ----- MAIN LAYOUT ----- */
+    #main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      grid-template-rows: 1fr;
+    }
+
+    /* ----- LEVERS ----- */
+    #levers {
+      border-right: 1px solid #1e2633;
+      padding: 12px;
+      background: #0d1420;
+    }
+
+    #levers h3 {
+      margin-top: 0;
+      font-size: 14px;
+      color: #9fb4ff;
+    }
+
     .lever {
-      margin-bottom: 12px;
-      opacity: 0.85;
+      margin-bottom: 10px;
+      padding: 6px;
+      border: 1px solid #1e2633;
+      background: #0b111b;
     }
 
-    /* --- Info panel split --- */
-    #stats {
-      flex: 1;
-      border-bottom: 1px solid #222;
+    /* ----- WORLD ----- */
+    #world {
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          #0b0f14,
+          #0b0f14 20px,
+          #0c121c 20px,
+          #0c121c 21px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          #0b0f14,
+          #0b0f14 20px,
+          #0c121c 20px,
+          #0c121c 21px
+        );
+    }
+
+    #world-box {
+      width: 90%;
+      height: 90%;
+      border: 1px solid #1e2633;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #5f6b85;
+    }
+
+    /* ----- EVENTS ----- */
+    #events {
+      height: 120px;
+      border-top: 1px solid #1e2633;
+      padding: 8px 12px;
+      background: #0f1622;
       font-size: 13px;
-    }
-
-    #whispers {
-      flex: 1;
-      font-size: 12px;
-      color: #aab0bb;
-    }
-
-    .stat {
-      margin-bottom: 6px;
-    }
-
-    .whisper {
-      margin-bottom: 8px;
-      opacity: 0.8;
+      overflow-y: auto;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- LEFT: LEVERS -->
-  <div id="levers" class="panel">
-    <div class="lever">Time Flow</div>
-    <div class="lever">Heat</div>
-    <div class="lever">Magic Density</div>
-    <div class="lever">Stability</div>
-    <div class="lever">Resource Flow</div>
-    <div class="lever">Sapience Pressure</div>
+  <div id="status">
+    Tick: 0 | Energy: Stable | Magic: Low
   </div>
 
-  <!-- CENTER: WORLD VIEW -->
-  <div id="world" class="panel">
-    <div>[ world view ]</div>
+  <div id="main">
+    <div id="levers">
+      <h3>Levers</h3>
+      <div class="lever">Time Speed</div>
+      <div class="lever">Heat</div>
+      <div class="lever">Magic</div>
+      <div class="lever">Human Change Rate</div>
+    </div>
+
+    <div id="world">
+      <div id="world-box">
+        World Grid (Softlands)
+      </div>
+    </div>
   </div>
 
-  <!-- RIGHT: INFO -->
-  <div id="info" class="panel">
-    <!-- STATS -->
-    <div id="stats">
-      <div class="stat">Tick: —</div>
-      <div class="stat">Avg Energy: —</div>
-      <div class="stat">Avg Heat: —</div>
-      <div class="stat">Avg Magic: —</div>
-      <div class="stat">Stability: —</div>
-      <div class="stat">Population: —</div>
-    </div>
-
-    <!-- WHISPERS -->
-    <div id="whispers">
-      <div class="whisper">The Softlands is calm.</div>
-      <div class="whisper">Life is beginning.</div>
-    </div>
+  <div id="events">
+    • World initialized<br>
+    • Softlands stable<br>
+    • No dominant species
   </div>
 
 </body>
