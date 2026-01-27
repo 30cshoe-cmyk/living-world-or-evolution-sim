@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living World – Prototype</title>
+  <style>
+    body {
+      background: #111;
+      color: #ddd;
+      font-family: monospace;
+      padding: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Living World Prototype</h2>
+  <div id="status"></div>
+
+  <script>
+    /***********************
+     * CONFIG (speed knobs)
+     ***********************/
+    const TICKS_PER_SECOND = 2;      // base speed
+    const MAX_CATCHUP_TICKS = 200;   // safety cap
+    const SAVE_INTERVAL = 50;        // ticks
+
+    /***********************
+     * WORLD STATE
+     ***********************/
+    let world = {
+      tick: 0,
+      resources: {
+        energy: 1000
+      },
+      lastUpdate: Date.now()
+    };
+
+    /***********************
+     * LOAD / SAVE
+     ***********************/
+    function loadWorld() {
+      const saved = localStorage.getItem("world_state");
+      if (saved) {
+        world = JSON.parse(saved);
+      }
+    }
+
+    function saveWorld() {
+      world.lastUpdate = Date.now();
+      localStorage.setItem("world_state", JSON.stringify(world));
+    }
+
+    /***********************
+     * CORE SIM STEP
+     ***********************/
+    function runTick() {
+      world.tick++;
+
+      // basic world drift (placeholder)
+      world.resources.energy += 1;
+      if (world.resources.energy > 2000) {
+        world.resources.energy = 2000;
+      }
+
+      if (world.tick % SAVE_INTERVAL === 0) {
+        saveWorld();
+      }
+    }
+
+    /***********************
+     * CATCH-UP LOGIC
+     ***********************/
+    function catchUp() {
+      const now = Date.now();
+      const elapsedSeconds = (now - world.lastUpdate) / 1000;
+      let ticksToRun = Math.floor(elapsedSeconds * TICKS_PER_SECOND);
+
+      if (ticksToRun > MAX_CATCHUP_TICKS) {
+        ticksToRun = MAX_CATCHUP_TICKS;
+      }
+
+      for (let i = 0; i < ticksToRun; i++) {
+        runTick();
+      }
+    }
+
+    /***********************
+     * MAIN LOOP
+     ***********************/
+    function startLoop() {
+      setInterval(() => {
+        runTick();
+        render();
+      }, 1000 / TICKS_PER_SECOND);
+    }
+
+    /***********************
+     * RENDER (TEMP)
+     ***********************/
+    function render() {
+      document.getElementById("status").innerText =
+        `Tick: ${world.tick}\n` +
+        `Energy: ${world.resources.energy}`;
+    }
+
+    /***********************
+     * BOOT
+     ***********************/
+    loadWorld();
+    catchUp();
+    startLoop();
+  </script>
+</body>
+</html>
