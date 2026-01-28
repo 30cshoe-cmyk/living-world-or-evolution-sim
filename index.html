@@ -201,3 +201,43 @@ body {
 
 </body>
 </html>
+// --- birthday creature --- //
+const world = document.getElementById("world");
+
+const creature = document.createElement("div");
+creature.className = "creature";
+world.appendChild(creature);
+
+let pos = { x: 5, y: 5 };
+
+function moveCreature() {
+  const dx = Math.floor(Math.random() * 3) - 1;
+  const dy = Math.floor(Math.random() * 3) - 1;
+
+  pos.x = Math.max(0, Math.min(9, pos.x + dx));
+  pos.y = Math.max(0, Math.min(9, pos.y + dy));
+
+  creature.style.left = `${pos.x * 40 + 10}px`;
+  creature.style.top  = `${pos.y * 40 + 10}px`;
+}
+
+setInterval(moveCreature, 2000);
+
+.creature {
+  width: 12px;
+  height: 12px;
+  background: #6dfcff;
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: 0 0 10px rgba(109,252,255,0.8);
+  transition: top 1.5s linear, left 1.5s linear;
+}
+.creature {
+  width: 12px;
+  height: 12px;
+  background: #6dfcff;
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: 0 0 10px rgba(109,252,255,0.8);
+  transition: top 1.5s linear, left 1.5s linear;
+}
