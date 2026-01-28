@@ -13,8 +13,6 @@ body {
   color: #cfe8ff;
   display: flex;
   flex-direction: column;
-
-  /* calm neon night background */
   background:
     radial-gradient(circle at top, rgba(0,120,255,0.12), transparent 60%),
     linear-gradient(180deg, #060b14, #02040a);
@@ -70,23 +68,20 @@ body {
   margin-bottom: 14px;
 }
 
-.lever label {
-  display: block;
-  margin-bottom: 4px;
-  color: #9adfff;
-}
-
-.lever input {
-  width: 100%;
-}
-
 /* ========= WORLD ========= */
 #world {
   padding: 16px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
 
+#world-box {
+  width: 95%;
+  height: 95%;
+  position: relative; /* IMPORTANT */
+  border: 1px solid rgba(0,200,255,0.4);
+  box-shadow: 0 0 20px rgba(0,200,255,0.15);
   background:
     repeating-linear-gradient(
       0deg,
@@ -104,44 +99,27 @@ body {
     );
 }
 
-#world-box {
-  width: 95%;
-  height: 95%;
-  border: 1px solid rgba(0,200,255,0.4);
-  box-shadow: 0 0 20px rgba(0,200,255,0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #6fbfe6;
-  font-size: 18px;
+/* ========= CREATURE ========= */
+.creature {
+  width: 12px;
+  height: 12px;
+  background: #6dfcff;
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: 0 0 10px rgba(109,252,255,0.8);
+  transition: top 1.5s linear, left 1.5s linear;
 }
 
 /* ========= EVENTS ========= */
 #events {
   height: 180px;
   padding: 16px 24px;
-  overflow: hidden;
-}
-
-.log {
-  animation: driftUp 50s linear infinite;
-}
-
-@keyframes driftUp {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-50%); }
-}
-
-.log p {
-  margin: 6px 0;
-  opacity: 0.85;
 }
 </style>
 </head>
 
 <body>
 
-<!-- STATUS -->
 <div id="status" class="panel">
   <div>Tick: 0</div>
   <div>Energy: Stable</div>
@@ -151,62 +129,34 @@ body {
 
 <div class="neon-sep" style="height:6px;"></div>
 
-<!-- MAIN -->
 <div id="main">
-
-  <!-- LEVERS -->
   <div id="levers" class="panel">
     <h3>World Levers</h3>
-
-    <div class="lever">
-      <label>Time Flow</label>
-      <input type="range" min="1" max="5" value="2">
-    </div>
-
-    <div class="lever">
-      <label>Heat</label>
-      <input type="range" min="0" max="100" value="50">
-    </div>
-
-    <div class="lever">
-      <label>Magic Pressure</label>
-      <input type="range" min="0" max="100" value="20">
-    </div>
-
-    <div class="lever">
-      <label>Human Adaptation Rate</label>
-      <input type="range" min="0" max="100" value="30">
-    </div>
+    <div class="lever"><label>Time Flow</label><input type="range"></div>
+    <div class="lever"><label>Heat</label><input type="range"></div>
+    <div class="lever"><label>Magic</label><input type="range"></div>
   </div>
 
   <div class="neon-sep"></div>
 
-  <!-- WORLD -->
   <div id="world">
-    <div id="world-box">
-      World Grid — Softlands
-    </div>
+    <div id="world-box"></div>
   </div>
-
 </div>
 
 <div class="neon-sep" style="height:6px;"></div>
 
-<!-- EVENTS -->
 <div id="events" class="panel">
-  <div class="log">
-    <p>• World initialized</p>
-  </div>
+  <p>• World initialized</p>
 </div>
 
-</body>
-</html>
+<script>
 // --- birthday creature --- //
-const world = document.getElementById("world");
+const worldBox = document.getElementById("world-box");
 
 const creature = document.createElement("div");
 creature.className = "creature";
-world.appendChild(creature);
+worldBox.appendChild(creature);
 
 let pos = { x: 5, y: 5 };
 
@@ -217,27 +167,13 @@ function moveCreature() {
   pos.x = Math.max(0, Math.min(9, pos.x + dx));
   pos.y = Math.max(0, Math.min(9, pos.y + dy));
 
-  creature.style.left = `${pos.x * 40 + 10}px`;
-  creature.style.top  = `${pos.y * 40 + 10}px`;
+  creature.style.left = `${pos.x * 40 + 20}px`;
+  creature.style.top  = `${pos.y * 40 + 20}px`;
 }
 
+moveCreature();
 setInterval(moveCreature, 2000);
+</script>
 
-.creature {
-  width: 12px;
-  height: 12px;
-  background: #6dfcff;
-  border-radius: 50%;
-  position: absolute;
-  box-shadow: 0 0 10px rgba(109,252,255,0.8);
-  transition: top 1.5s linear, left 1.5s linear;
-}
-.creature {
-  width: 12px;
-  height: 12px;
-  background: #6dfcff;
-  border-radius: 50%;
-  position: absolute;
-  box-shadow: 0 0 10px rgba(109,252,255,0.8);
-  transition: top 1.5s linear, left 1.5s linear;
-}
+</body>
+</html>
