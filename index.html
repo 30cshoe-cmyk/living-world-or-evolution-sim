@@ -5,49 +5,37 @@
 <title>Living World — Softlands</title>
 
 <style>
-/* ========= GLOBAL ========= */
 body {
   margin: 0;
-  height: 100vh;
-  font-family: monospace;
-  background: linear-gradient(#05080f, #02040a);
+  background: #0b1020;
   color: #cfe8ff;
+  font-family: monospace;
   display: flex;
   flex-direction: column;
+  height: 100vh;
 }
 
-/* ========= PANELS ========= */
-.panel {
-  background: rgba(8, 14, 28, 0.85);
-  border-bottom: 1px solid rgba(120,180,255,0.25);
-  backdrop-filter: blur(6px);
-}
-
-/* ========= STATUS ========= */
 #status {
-  height: 90px;
-  padding: 16px 24px;
+  padding: 12px 20px;
+  background: rgba(10,15,30,0.9);
   display: flex;
-  align-items: center;
-  gap: 40px;
+  gap: 30px;
 }
 
-/* ========= MAIN ========= */
 #main {
   flex: 1;
   display: grid;
   grid-template-columns: 260px 1fr;
 }
 
-/* ========= LEVERS ========= */
 #levers {
   padding: 16px;
-  border-right: 1px solid rgba(120,180,255,0.25);
+  background: rgba(10,15,30,0.85);
+  border-right: 1px solid rgba(120,180,255,0.2);
 }
 
 #levers h3 {
   margin-top: 0;
-  color: #9adfff;
 }
 
 .lever {
@@ -57,115 +45,37 @@ body {
 .lever label {
   display: block;
   margin-bottom: 4px;
-  color: #b6e6ff;
 }
 
-.lever input {
+canvas {
+  display: block;
   width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
 }
 
-/* ========= WORLD ========= */
-#world {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(#8aa0c8 0%, #c7b6d9 45%, #f1d2c8 65%);
-}
-
-/* ========= CLOUDS ========= */
-.cloud {
-  position: absolute;
-  top: 60px;
-  width: 180px;
-  height: 60px;
-  background: rgba(255,255,255,0.7);
-  border-radius: 40px;
-  filter: blur(2px);
-}
-
-/* ========= MOUNTAINS ========= */
-.mountain {
-  position: absolute;
-  bottom: 180px;
-  width: 120%;
-  height: 220px;
-  background: linear-gradient(#6f7fa3, #4e5f7a);
-  clip-path: polygon(
-    0% 100%, 10% 60%, 22% 80%, 35% 45%,
-    48% 75%, 62% 40%, 75% 70%, 90% 50%, 100% 100%
-  );
-}
-
-/* snow overlay */
-#snow {
-  position: absolute;
-  bottom: 330px;
-  width: 120%;
-  height: 120px;
-  background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0));
-  pointer-events: none;
-}
-
-/* ========= FOREST ========= */
-#forest {
-  position: absolute;
-  bottom: 120px;
-  width: 100%;
-  height: 120px;
-  background: repeating-linear-gradient(
-    90deg,
-    #1f3b2f,
-    #1f3b2f 6px,
-    #243f34 6px,
-    #243f34 12px
-  );
-}
-
-/* ========= MEADOW ========= */
-#meadow {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 140px;
-  background: linear-gradient(#5f8f6a, #3f6f56);
-  clip-path: polygon(0% 30%, 20% 20%, 40% 35%, 60% 15%, 80% 25%, 100% 20%, 100% 100%, 0% 100%);
-}
-
-/* ========= MAGIC GLOW ========= */
-.magic {
-  box-shadow: inset 0 0 40px rgba(120,180,255,0.25);
-}
-
-/* ========= EVENTS ========= */
 #events {
-  height: 140px;
-  padding: 12px 24px;
-  border-top: 1px solid rgba(120,180,255,0.25);
+  padding: 10px 20px;
+  background: rgba(10,15,30,0.9);
   font-size: 14px;
 }
-
 </style>
 </head>
 
 <body>
 
-<!-- STATUS -->
-<div id="status" class="panel">
-  <div>Tick: <span id="tick">0</span></div>
+<div id="status">
   <div>Biome: Softlands</div>
-  <div>Energy: Stable</div>
-  <div>Magic: <span id="magicLabel">Low</span></div>
+  <div>Tick: <span id="tick">0</span></div>
 </div>
 
-<!-- MAIN -->
 <div id="main">
-
-  <!-- LEVERS -->
-  <div id="levers" class="panel">
+  <div id="levers">
     <h3>World Levers</h3>
 
     <div class="lever">
       <label>Time Flow</label>
-      <input id="timeFlow" type="range" min="1" max="5" value="2">
+      <input id="time" type="range" min="1" max="5" value="2">
     </div>
 
     <div class="lever">
@@ -174,73 +84,95 @@ body {
     </div>
 
     <div class="lever">
-      <label>Magic Pressure</label>
+      <label>Magic</label>
       <input id="magic" type="range" min="0" max="100" value="10">
     </div>
-
-    <div class="lever">
-      <label>Human Adaptation</label>
-      <input type="range" min="0" max="100" value="30">
-    </div>
   </div>
 
-  <!-- WORLD -->
-  <div id="world">
-    <div class="cloud" id="cloud1"></div>
-    <div class="cloud" id="cloud2"></div>
-
-    <div class="mountain"></div>
-    <div id="snow"></div>
-
-    <div id="forest"></div>
-    <div id="meadow"></div>
-  </div>
-
+  <canvas id="world"></canvas>
 </div>
 
-<!-- EVENTS -->
-<div id="events" class="panel">
-  • The Softlands rest quietly.
+<div id="events">
+  • The Softlands lie quietly beneath drifting clouds.
 </div>
 
 <script>
+const canvas = document.getElementById("world");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+  canvas.width = 480;
+  canvas.height = 270;
+}
+resize();
+
 let tick = 0;
-const tickEl = document.getElementById("tick");
-const snow = document.getElementById("snow");
-const world = document.getElementById("world");
-const magicLabel = document.getElementById("magicLabel");
+let cloudOffset = 0;
 
-const cloud1 = document.getElementById("cloud1");
-const cloud2 = document.getElementById("cloud2");
+function drawSky() {
+  const g = ctx.createLinearGradient(0,0,0,canvas.height);
+  g.addColorStop(0,"#b8c3e6");
+  g.addColorStop(0.6,"#e6c6cf");
+  g.addColorStop(1,"#f3d7c8");
+  ctx.fillStyle = g;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+}
 
-let c1x = -200;
-let c2x = 300;
+function drawClouds(speed) {
+  ctx.fillStyle = "rgba(255,255,255,0.8)";
+  for (let i=0;i<3;i++) {
+    const x = (cloudOffset + i*180) % (canvas.width+200) - 100;
+    ctx.fillRect(x,40+i*6,60,16);
+    ctx.fillRect(x+20,30+i*6,80,20);
+  }
+  cloudOffset += speed;
+}
+
+function drawMountains() {
+  ctx.fillStyle = "#7a86b8";
+  ctx.beginPath();
+  ctx.moveTo(0,180);
+  ctx.lineTo(60,120);
+  ctx.lineTo(140,160);
+  ctx.lineTo(220,110);
+  ctx.lineTo(300,150);
+  ctx.lineTo(380,120);
+  ctx.lineTo(480,160);
+  ctx.lineTo(480,270);
+  ctx.lineTo(0,270);
+  ctx.fill();
+}
+
+function drawForest() {
+  ctx.fillStyle = "#2f4f44";
+  ctx.fillRect(0,170,480,50);
+}
+
+function drawMeadow() {
+  ctx.fillStyle = "#6fa37c";
+  ctx.beginPath();
+  ctx.moveTo(0,200);
+  ctx.lineTo(120,190);
+  ctx.lineTo(240,205);
+  ctx.lineTo(360,195);
+  ctx.lineTo(480,200);
+  ctx.lineTo(480,270);
+  ctx.lineTo(0,270);
+  ctx.fill();
+}
 
 function update() {
   tick++;
-  tickEl.textContent = tick;
+  document.getElementById("tick").textContent = tick;
 
-  const timeFlow = +document.getElementById("timeFlow").value;
-  const heat = +document.getElementById("heat").value;
-  const magic = +document.getElementById("magic").value;
+  const time = +document.getElementById("time").value;
 
-  /* Snow line reacts to heat */
-  snow.style.bottom = `${280 + (50 - heat)}px`;
-
-  /* Clouds move with time */
-  c1x += 0.2 * timeFlow;
-  c2x += 0.1 * timeFlow;
-
-  if (c1x > window.innerWidth) c1x = -200;
-  if (c2x > window.innerWidth) c2x = -300;
-
-  cloud1.style.left = c1x + "px";
-  cloud2.style.left = c2x + "px";
-  cloud2.style.top = "110px";
-
-  /* Magic glow */
-  world.classList.toggle("magic", magic > 40);
-  magicLabel.textContent = magic > 40 ? "Rising" : "Low";
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawSky();
+  drawClouds(0.1 * time);
+  drawMountains();
+  drawForest();
+  drawMeadow();
 }
 
 setInterval(update, 1000);
