@@ -15,20 +15,7 @@ body {
   flex-direction: column;
   background:
     radial-gradient(circle at top, rgba(0,120,255,0.12), transparent 60%),
-    linear-gradient(180deg, #060b14, #02040a);
-}
-
-/* ========= NEON SEPARATORS ========= */
-.neon-sep {
-  background: linear-gradient(
-    90deg,
-    rgba(0,180,255,0.4),
-    rgba(0,255,255,0.8),
-    rgba(0,180,255,0.4)
-  );
-  box-shadow:
-    0 0 10px rgba(0,200,255,0.6),
-    0 0 20px rgba(0,200,255,0.3);
+    linear-gradient(180deg, #050a12, #02040a);
 }
 
 /* ========= PANELS ========= */
@@ -37,14 +24,24 @@ body {
   backdrop-filter: blur(4px);
 }
 
+/* ========= SEPARATORS ========= */
+.neon-sep {
+  height: 6px;
+  background: linear-gradient(
+    90deg,
+    rgba(0,160,255,0.2),
+    rgba(0,220,255,0.5),
+    rgba(0,160,255,0.2)
+  );
+}
+
 /* ========= TOP STATUS ========= */
 #status {
-  height: 100px;
+  height: 90px;
   padding: 16px 24px;
   display: flex;
+  gap: 36px;
   align-items: center;
-  gap: 40px;
-  font-size: 16px;
 }
 
 /* ========= MAIN ========= */
@@ -60,22 +57,8 @@ body {
 }
 
 #levers h3 {
-  margin-top: 0;
-  color: #7fd7ff;
-}
-
-.lever {
-  margin-bottom: 14px;
-}
-
-.lever label {
-  display: block;
-  margin-bottom: 4px;
   color: #9adfff;
-}
-
-.lever input {
-  width: 100%;
+  margin-top: 0;
 }
 
 /* ========= WORLD ========= */
@@ -90,61 +73,71 @@ body {
   width: 95%;
   height: 95%;
   position: relative;
-  border: 1px solid rgba(0,200,255,0.4);
-  box-shadow: 0 0 20px rgba(0,200,255,0.15);
   overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 0 25px rgba(0,160,255,0.15);
 }
 
-/* ========= BIOME GRID ========= */
-#tiles {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  grid-template-rows: repeat(10, 1fr);
-  animation: softBreath 18s ease-in-out infinite;
+/* ========= SOFTLANDS BASE ========= */
+#softlands {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse at 30% 40%,
+      rgba(140, 200, 190, 0.55),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at 70% 60%,
+      rgba(100, 170, 160, 0.45),
+      transparent 65%
+    ),
+    linear-gradient(
+      180deg,
+      #5fa3a0,
+      #3c6f74
+    );
 }
 
-/* ========= SOFTLANDS TILES ========= */
-.tile {
-  background: linear-gradient(
-    135deg,
-    rgba(110, 170, 150, 0.35),
-    rgba(60, 120, 100, 0.35)
-  );
-  box-shadow: inset 0 0 2px rgba(0,0,0,0.35);
-  transition: background 6s ease;
+/* ========= HILLS ========= */
+#hills {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      160deg,
+      rgba(255,255,255,0.08),
+      transparent 40%
+    ),
+    linear-gradient(
+      -160deg,
+      rgba(0,0,0,0.12),
+      transparent 50%
+    );
+  opacity: 0.6;
 }
 
-/* subtle variation */
-.tile.lush {
-  background: linear-gradient(
-    135deg,
-    rgba(130, 200, 160, 0.45),
-    rgba(70, 140, 110, 0.45)
-  );
+/* ========= CLOUDS ========= */
+.clouds {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(circle, rgba(255,255,255,0.08) 20%, transparent 60%),
+    radial-gradient(circle, rgba(255,255,255,0.06) 20%, transparent 60%);
+  background-size: 400px 300px;
+  animation: drift 120s linear infinite;
 }
 
-.tile.dry {
-  background: linear-gradient(
-    135deg,
-    rgba(160, 180, 140, 0.35),
-    rgba(120, 140, 110, 0.35)
-  );
-}
-
-/* slow biome breathing */
-@keyframes softBreath {
-  0%   { filter: brightness(1); }
-  50%  { filter: brightness(1.05); }
-  100% { filter: brightness(1); }
+@keyframes drift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(400px); }
 }
 
 /* ========= EVENTS ========= */
 #events {
-  height: 180px;
+  height: 160px;
   padding: 16px 24px;
-  overflow: hidden;
   color: #9adfff;
 }
 </style>
@@ -152,7 +145,6 @@ body {
 
 <body>
 
-<!-- STATUS -->
 <div id="status" class="panel">
   <div>Tick: —</div>
   <div>Energy: Stable</div>
@@ -160,74 +152,30 @@ body {
   <div>Biome: Softlands</div>
 </div>
 
-<div class="neon-sep" style="height:6px;"></div>
+<div class="neon-sep"></div>
 
-<!-- MAIN -->
 <div id="main">
-
-  <!-- LEVERS -->
   <div id="levers" class="panel">
     <h3>World Levers</h3>
-
-    <div class="lever">
-      <label>Time Flow</label>
-      <input type="range" min="1" max="5" value="2">
-    </div>
-
-    <div class="lever">
-      <label>Heat</label>
-      <input type="range" min="0" max="100" value="50">
-    </div>
-
-    <div class="lever">
-      <label>Magic Pressure</label>
-      <input type="range" min="0" max="100" value="20">
-    </div>
-
-    <div class="lever">
-      <label>Human Adaptation Rate</label>
-      <input type="range" min="0" max="100" value="30">
-    </div>
+    <p>(inactive)</p>
   </div>
 
   <div class="neon-sep"></div>
 
-  <!-- WORLD -->
   <div id="world">
     <div id="world-box">
-      <div id="tiles"></div>
+      <div id="softlands"></div>
+      <div id="hills"></div>
+      <div class="clouds"></div>
     </div>
   </div>
-
 </div>
 
-<div class="neon-sep" style="height:6px;"></div>
+<div class="neon-sep"></div>
 
-<!-- EVENTS -->
 <div id="events" class="panel">
-  • The Softlands lie quiet.
+  • The Softlands rest beneath slow-moving clouds.
 </div>
-
-<script>
-/* ========= SOFTLANDS GENERATION ========= */
-const tiles = document.getElementById("tiles");
-
-function generateSoftlands() {
-  tiles.innerHTML = "";
-  for (let i = 0; i < 100; i++) {
-    const tile = document.createElement("div");
-    tile.classList.add("tile");
-
-    const roll = Math.random();
-    if (roll < 0.15) tile.classList.add("lush");
-    else if (roll > 0.85) tile.classList.add("dry");
-
-    tiles.appendChild(tile);
-  }
-}
-
-generateSoftlands();
-</script>
 
 </body>
 </html>
