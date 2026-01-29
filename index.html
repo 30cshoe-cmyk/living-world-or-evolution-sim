@@ -93,59 +93,86 @@ canvas {
 </div>
 
 <div id="events">
-  • The Softlands lie quietly beneath drifting clouds.
+  • The Softlands breathe quietly.
 </div>
 
 <script>
 const canvas = document.getElementById("world");
 const ctx = canvas.getContext("2d");
 
-function resize() {
-  canvas.width = 480;
-  canvas.height = 270;
-}
-resize();
+canvas.width = 480;
+canvas.height = 270;
 
 let tick = 0;
 let cloudOffset = 0;
 
 function drawSky() {
-  const g = ctx.createLinearGradient(0,0,0,canvas.height);
-  g.addColorStop(0,"#b8c3e6");
-  g.addColorStop(0.6,"#e6c6cf");
-  g.addColorStop(1,"#f3d7c8");
-  ctx.fillStyle = g;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  for (let y = 0; y < canvas.height; y++) {
+    const t = y / canvas.height;
+    ctx.fillStyle = `rgb(
+      ${180 + t*40},
+      ${195 + t*20},
+      ${230 - t*30}
+    )`;
+    ctx.fillRect(0, y, canvas.width, 1);
+  }
 }
 
 function drawClouds(speed) {
-  ctx.fillStyle = "rgba(255,255,255,0.8)";
-  for (let i=0;i<3;i++) {
-    const x = (cloudOffset + i*180) % (canvas.width+200) - 100;
-    ctx.fillRect(x,40+i*6,60,16);
-    ctx.fillRect(x+20,30+i*6,80,20);
-  }
   cloudOffset += speed;
+  ctx.fillStyle = "rgba(255,255,255,0.8)";
+
+  for (let i = 0; i < 3; i++) {
+    const baseX = (cloudOffset + i*180) % (canvas.width+200) - 100;
+    const y = 40 + i*8;
+
+    ctx.fillRect(baseX, y, 60, 14);
+    ctx.fillRect(baseX+20, y-6, 80, 18);
+    ctx.fillRect(baseX+50, y+4, 50, 12);
+  }
 }
 
 function drawMountains() {
-  ctx.fillStyle = "#7a86b8";
+  // far mountains
+  ctx.fillStyle = "#8d95c9";
   ctx.beginPath();
-  ctx.moveTo(0,180);
-  ctx.lineTo(60,120);
-  ctx.lineTo(140,160);
-  ctx.lineTo(220,110);
-  ctx.lineTo(300,150);
-  ctx.lineTo(380,120);
+  ctx.moveTo(0,170);
+  ctx.lineTo(80,120);
+  ctx.lineTo(160,150);
+  ctx.lineTo(240,110);
+  ctx.lineTo(320,150);
+  ctx.lineTo(400,120);
   ctx.lineTo(480,160);
   ctx.lineTo(480,270);
   ctx.lineTo(0,270);
   ctx.fill();
+
+  // near mountains
+  ctx.fillStyle = "#6e79a8";
+  ctx.beginPath();
+  ctx.moveTo(0,185);
+  ctx.lineTo(70,140);
+  ctx.lineTo(150,170);
+  ctx.lineTo(230,135);
+  ctx.lineTo(310,175);
+  ctx.lineTo(390,140);
+  ctx.lineTo(480,175);
+  ctx.lineTo(480,270);
+  ctx.lineTo(0,270);
+  ctx.fill();
+
+  // snow hints
+  ctx.fillStyle = "rgba(255,255,255,0.7)";
+  ctx.fillRect(130,135,30,6);
+  ctx.fillRect(260,130,40,6);
 }
 
 function drawForest() {
-  ctx.fillStyle = "#2f4f44";
-  ctx.fillRect(0,170,480,50);
+  for (let x = 0; x < canvas.width; x += 6) {
+    const h = 30 + (x % 12);
+    ctx.fillStyle = "#2c4b40";
+    ctx.fillRect(x, 170, 4, h);
+  }
 }
 
 function drawMeadow() {
@@ -159,6 +186,14 @@ function drawMeadow() {
   ctx.lineTo(480,270);
   ctx.lineTo(0,270);
   ctx.fill();
+
+  // flowers
+  for (let i = 0; i < 40; i++) {
+    const x = Math.random() * canvas.width;
+    const y = 210 + Math.random() * 40;
+    ctx.fillStyle = i % 2 === 0 ? "#f2c1d1" : "#e8e29b";
+    ctx.fillRect(x, y, 2, 2);
+  }
 }
 
 function update() {
@@ -169,7 +204,7 @@ function update() {
 
   ctx.clearRect(0,0,canvas.width,canvas.height);
   drawSky();
-  drawClouds(0.1 * time);
+  drawClouds(0.08 * time);
   drawMountains();
   drawForest();
   drawMeadow();
