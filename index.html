@@ -2,143 +2,82 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Living World — Softlands</title>
+<title>Living World — First Biome</title>
 
 <style>
-/* ========= GLOBAL ========= */
 body {
   margin: 0;
   height: 100vh;
   font-family: monospace;
-  color: #cfe8ff;
+  background: #0a1022;
+  color: #d6f0ff;
   display: flex;
   flex-direction: column;
-  background:
-    radial-gradient(circle at top, rgba(0,120,255,0.12), transparent 60%),
-    linear-gradient(180deg, #050a12, #02040a);
 }
 
-/* ========= PANELS ========= */
+/* ---------- PANELS ---------- */
 .panel {
-  background: rgba(6, 12, 24, 0.9);
-  backdrop-filter: blur(4px);
+  background: rgba(12, 20, 40, 0.95);
+  padding: 14px 20px;
 }
 
-/* ========= SEPARATORS ========= */
-.neon-sep {
-  height: 6px;
-  background: linear-gradient(
-    90deg,
-    rgba(0,160,255,0.2),
-    rgba(0,220,255,0.5),
-    rgba(0,160,255,0.2)
-  );
-}
-
-/* ========= TOP STATUS ========= */
+/* ---------- STATUS ---------- */
 #status {
-  height: 90px;
-  padding: 16px 24px;
   display: flex;
-  gap: 36px;
-  align-items: center;
+  gap: 32px;
 }
 
-/* ========= MAIN ========= */
+/* ---------- MAIN ---------- */
 #main {
   flex: 1;
   display: grid;
-  grid-template-columns: 260px 6px 1fr;
+  grid-template-columns: 240px 1fr;
 }
 
-/* ========= LEVERS ========= */
+/* ---------- LEVERS ---------- */
 #levers {
-  padding: 16px;
+  border-right: 2px solid #1e2b55;
 }
 
-#levers h3 {
+.lever {
+  margin-bottom: 14px;
+}
+
+.lever label {
+  display: block;
+  margin-bottom: 4px;
   color: #9adfff;
-  margin-top: 0;
 }
 
-/* ========= WORLD ========= */
+input[type="range"] {
+  width: 100%;
+}
+
+/* ---------- WORLD ---------- */
 #world {
-  padding: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#world-box {
-  width: 95%;
-  height: 95%;
   position: relative;
-  overflow: hidden;
-  border-radius: 8px;
-  box-shadow: 0 0 25px rgba(0,160,255,0.15);
+  background: linear-gradient(
+    to bottom,
+    #0b3d6d 0%,
+    #0e5a8a 45%,
+    #1a7fa3 60%,
+    #2a5f3a 60%,
+    #1f3d26 100%
+  );
 }
 
-/* ========= SOFTLANDS BASE ========= */
-#softlands {
+/* hills drawn with SVG */
+svg {
   position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(
-      ellipse at 30% 40%,
-      rgba(140, 200, 190, 0.55),
-      transparent 60%
-    ),
-    radial-gradient(
-      ellipse at 70% 60%,
-      rgba(100, 170, 160, 0.45),
-      transparent 65%
-    ),
-    linear-gradient(
-      180deg,
-      #5fa3a0,
-      #3c6f74
-    );
+  bottom: 0;
+  width: 100%;
+  height: 100%;
 }
 
-/* ========= HILLS ========= */
-#hills {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(
-      160deg,
-      rgba(255,255,255,0.08),
-      transparent 40%
-    ),
-    linear-gradient(
-      -160deg,
-      rgba(0,0,0,0.12),
-      transparent 50%
-    );
-  opacity: 0.6;
-}
-
-/* ========= CLOUDS ========= */
-.clouds {
-  position: absolute;
-  inset: -20%;
-  background:
-    radial-gradient(circle, rgba(255,255,255,0.08) 20%, transparent 60%),
-    radial-gradient(circle, rgba(255,255,255,0.06) 20%, transparent 60%);
-  background-size: 400px 300px;
-  animation: drift 120s linear infinite;
-}
-
-@keyframes drift {
-  from { transform: translateX(0); }
-  to   { transform: translateX(400px); }
-}
-
-/* ========= EVENTS ========= */
+/* ---------- EVENTS ---------- */
 #events {
-  height: 160px;
-  padding: 16px 24px;
-  color: #9adfff;
+  height: 120px;
+  overflow-y: auto;
 }
 </style>
 </head>
@@ -146,36 +85,83 @@ body {
 <body>
 
 <div id="status" class="panel">
-  <div>Tick: —</div>
-  <div>Energy: Stable</div>
-  <div>Magic: Low</div>
-  <div>Biome: Softlands</div>
+  <div>Tick: <span id="tick">0</span></div>
+  <div>Biome: Rolling Lowlands</div>
 </div>
-
-<div class="neon-sep"></div>
 
 <div id="main">
   <div id="levers" class="panel">
-    <h3>World Levers</h3>
-    <p>(inactive)</p>
-  </div>
+    <h3>Terrain Controls</h3>
 
-  <div class="neon-sep"></div>
+    <div class="lever">
+      <label>Hill Height</label>
+      <input type="range" min="20" max="120" value="60" id="heightControl">
+    </div>
+
+    <div class="lever">
+      <label>Hill Roughness</label>
+      <input type="range" min="1" max="8" value="3" id="roughnessControl">
+    </div>
+
+    <button onclick="generateHills()">Reshape Land</button>
+  </div>
 
   <div id="world">
-    <div id="world-box">
-      <div id="softlands"></div>
-      <div id="hills"></div>
-      <div class="clouds"></div>
-    </div>
+    <svg id="terrain"></svg>
   </div>
 </div>
 
-<div class="neon-sep"></div>
-
-<div id="events" class="panel">
-  • The Softlands rest beneath slow-moving clouds.
+<div id="events" class="panel" id="log">
+  • Biome formed.
 </div>
+
+<script>
+const svg = document.getElementById("terrain");
+const log = document.getElementById("events");
+const heightControl = document.getElementById("heightControl");
+const roughnessControl = document.getElementById("roughnessControl");
+
+let tick = 0;
+
+function logEvent(text) {
+  log.innerHTML += `<br>• ${text}`;
+  log.scrollTop = log.scrollHeight;
+}
+
+function generateHills() {
+  const width = window.innerWidth - 240;
+  const height = window.innerHeight - 220;
+  const hillHeight = Number(heightControl.value);
+  const roughness = Number(roughnessControl.value);
+
+  let path = `M 0 ${height}`;
+
+  for (let x = 0; x <= width; x += 40) {
+    const y =
+      height -
+      hillHeight -
+      Math.sin(x / (120 / roughness)) * hillHeight * 0.6 -
+      Math.random() * hillHeight * 0.2;
+
+    path += ` L ${x} ${y}`;
+  }
+
+  path += ` L ${width} ${height} Z`;
+
+  svg.innerHTML = `
+    <path d="${path}" fill="#2f7d46" />
+  `;
+
+  logEvent("Land reshaped.");
+}
+
+setInterval(() => {
+  tick++;
+  document.getElementById("tick").textContent = tick;
+}, 1000);
+
+generateHills();
+</script>
 
 </body>
 </html>
