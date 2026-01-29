@@ -8,7 +8,7 @@
 body {
   margin: 0;
   background: #0e1325;
-  color: #cfe3ff;
+  color: #d6e6ff;
   font-family: monospace;
   height: 100vh;
   display: flex;
@@ -18,29 +18,18 @@ body {
 #status {
   padding: 10px 20px;
   background: rgba(12,18,40,0.9);
-  display: flex;
-  gap: 30px;
 }
 
 #main {
   flex: 1;
   display: grid;
   grid-template-columns: 260px 1fr;
-  min-height: 0;
 }
 
 #levers {
   padding: 16px;
   background: rgba(12,18,40,0.9);
-  border-right: 1px solid rgba(150,200,255,0.25);
-}
-
-#levers h3 {
-  margin-top: 0;
-}
-
-.lever {
-  margin-bottom: 14px;
+  border-right: 1px solid rgba(120,170,255,0.25);
 }
 
 canvas {
@@ -49,42 +38,23 @@ canvas {
   image-rendering: pixelated;
   background: black;
 }
-
-#events {
-  padding: 10px 20px;
-  background: rgba(12,18,40,0.9);
-}
 </style>
 </head>
 
 <body>
 
 <div id="status">
-  <div>Biome: Softlands</div>
-  <div>Tick: <span id="tick">0</span></div>
+  Biome: Softlands (Concept View)
 </div>
 
 <div id="main">
   <div id="levers">
     <h3>World Levers</h3>
-
-    <div class="lever">
-      <label>Time</label>
-      <input id="time" type="range" min="1" max="5" value="2">
-    </div>
-
-    <div class="lever">
-      <label>Heat</label>
-      <input id="heat" type="range" min="0" max="100" value="50">
-    </div>
+    <p>(Inactive for now)</p>
   </div>
 
-  <!-- LOW INTERNAL RESOLUTION -->
+  <!-- LOW RES = PIXEL LOOK -->
   <canvas id="world" width="240" height="135"></canvas>
-</div>
-
-<div id="events">
-  • The land rests quietly.
 </div>
 
 <script>
@@ -92,93 +62,60 @@ const canvas = document.getElementById("world");
 const ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
 
-let tick = 0;
-let cloudShift = 0;
+/* SKY */
+ctx.fillStyle = "#9fbbe8";
+ctx.fillRect(0, 0, 240, 135);
 
-/* STATIC FLOWERS */
-const flowers = [];
-for (let i = 0; i < 90; i++) {
-  flowers.push({
-    x: Math.random() * 240,
-    y: 95 + Math.random() * 30,
-    c: Math.random() > 0.5 ? "#e7b7c8" : "#e5e1a4"
-  });
+/* CLOUDS */
+ctx.fillStyle = "#eef4ff";
+ctx.fillRect(30, 18, 22, 6);
+ctx.fillRect(36, 14, 30, 8);
+
+ctx.fillRect(140, 22, 20, 6);
+ctx.fillRect(146, 18, 28, 8);
+
+/* DISTANT HILLS */
+ctx.fillStyle = "#8fa3c8";
+ctx.beginPath();
+ctx.moveTo(0, 80);
+ctx.lineTo(40, 65);
+ctx.lineTo(80, 72);
+ctx.lineTo(120, 60);
+ctx.lineTo(160, 70);
+ctx.lineTo(200, 62);
+ctx.lineTo(240, 68);
+ctx.lineTo(240, 90);
+ctx.lineTo(0, 90);
+ctx.fill();
+
+/* MAIN HILL */
+ctx.fillStyle = "#7fb88c";
+ctx.beginPath();
+ctx.moveTo(0, 95);
+ctx.lineTo(50, 88);
+ctx.lineTo(110, 92);
+ctx.lineTo(170, 86);
+ctx.lineTo(240, 90);
+ctx.lineTo(240, 135);
+ctx.lineTo(0, 135);
+ctx.fill();
+
+/* GRASS PIXELS */
+for (let x = 0; x < 240; x++) {
+  ctx.fillStyle = x % 2 === 0 ? "#6aa97a" : "#5f9b70";
+  ctx.fillRect(x, 95, 1, 40);
 }
 
-function sky() {
-  for (let y = 0; y < 135; y++) {
-    ctx.fillStyle = y < 60 ? "#9fb7e8" : "#b9d1f0";
-    ctx.fillRect(0, y, 240, 1);
-  }
+/* FLOWERS (STATIC) */
+const flowers = [
+  [40,110], [55,112], [70,108],
+  [120,110], [150,113], [180,109]
+];
+
+for (const [x,y] of flowers) {
+  ctx.fillStyle = "#e9c7d7";
+  ctx.fillRect(x, y, 1, 1);
 }
-
-function clouds(speed) {
-  cloudShift += speed;
-  ctx.fillStyle = "#eef2ff";
-
-  for (let i = 0; i < 3; i++) {
-    const x = ((cloudShift + i * 80) % 280) - 40;
-    ctx.fillRect(x, 18 + i * 4, 20, 6);
-    ctx.fillRect(x + 6, 14 + i * 4, 28, 8);
-  }
-}
-
-function mountains() {
-  ctx.fillStyle = "#7f8db8";
-  ctx.beginPath();
-  ctx.moveTo(0,90);
-  ctx.lineTo(40,60);
-  ctx.lineTo(80,78);
-  ctx.lineTo(120,55);
-  ctx.lineTo(160,75);
-  ctx.lineTo(200,60);
-  ctx.lineTo(240,72);
-  ctx.lineTo(240,135);
-  ctx.lineTo(0,135);
-  ctx.fill();
-}
-
-function grass() {
-  for (let x = 0; x < 240; x++) {
-    const height = 25 + (x % 6);
-    ctx.fillStyle = x % 3 === 0 ? "#6f9b7a" : "#5f8d6c";
-    ctx.fillRect(x, 95, 1, height);
-  }
-}
-
-function meadow() {
-  ctx.fillStyle = "#7fb88c";
-  ctx.beginPath();
-  ctx.moveTo(0,95);
-  ctx.lineTo(60,88);
-  ctx.lineTo(120,92);
-  ctx.lineTo(180,86);
-  ctx.lineTo(240,90);
-  ctx.lineTo(240,135);
-  ctx.lineTo(0,135);
-  ctx.fill();
-
-  for (const f of flowers) {
-    ctx.fillStyle = f.c;
-    ctx.fillRect(f.x, f.y, 1, 1);
-  }
-}
-
-function update() {
-  tick++;
-  document.getElementById("tick").textContent = tick;
-
-  const time = +document.getElementById("time").value;
-
-  ctx.clearRect(0,0,240,135);
-  sky();
-  clouds(0.2 * time);
-  mountains();
-  meadow();
-  grass();
-}
-
-setInterval(update, 1000);
 </script>
 
 </body>
