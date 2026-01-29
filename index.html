@@ -2,41 +2,52 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Living World — First Biome</title>
+<title>Living World — Softlands</title>
 
 <style>
+/* ========= GLOBAL ========= */
 body {
   margin: 0;
   height: 100vh;
   font-family: monospace;
-  background: #0a1022;
-  color: #d6f0ff;
+  background: linear-gradient(#05080f, #02040a);
+  color: #cfe8ff;
   display: flex;
   flex-direction: column;
 }
 
-/* ---------- PANELS ---------- */
+/* ========= PANELS ========= */
 .panel {
-  background: rgba(12, 20, 40, 0.95);
-  padding: 14px 20px;
+  background: rgba(8, 14, 28, 0.85);
+  border-bottom: 1px solid rgba(120,180,255,0.25);
+  backdrop-filter: blur(6px);
 }
 
-/* ---------- STATUS ---------- */
+/* ========= STATUS ========= */
 #status {
+  height: 90px;
+  padding: 16px 24px;
   display: flex;
-  gap: 32px;
+  align-items: center;
+  gap: 40px;
 }
 
-/* ---------- MAIN ---------- */
+/* ========= MAIN ========= */
 #main {
   flex: 1;
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 260px 1fr;
 }
 
-/* ---------- LEVERS ---------- */
+/* ========= LEVERS ========= */
 #levers {
-  border-right: 2px solid #1e2b55;
+  padding: 16px;
+  border-right: 1px solid rgba(120,180,255,0.25);
+}
+
+#levers h3 {
+  margin-top: 0;
+  color: #9adfff;
 }
 
 .lever {
@@ -46,121 +57,193 @@ body {
 .lever label {
   display: block;
   margin-bottom: 4px;
-  color: #9adfff;
+  color: #b6e6ff;
 }
 
-input[type="range"] {
+.lever input {
   width: 100%;
 }
 
-/* ---------- WORLD ---------- */
+/* ========= WORLD ========= */
 #world {
   position: relative;
-  background: linear-gradient(
-    to bottom,
-    #0b3d6d 0%,
-    #0e5a8a 45%,
-    #1a7fa3 60%,
-    #2a5f3a 60%,
-    #1f3d26 100%
+  overflow: hidden;
+  background: linear-gradient(#8aa0c8 0%, #c7b6d9 45%, #f1d2c8 65%);
+}
+
+/* ========= CLOUDS ========= */
+.cloud {
+  position: absolute;
+  top: 60px;
+  width: 180px;
+  height: 60px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 40px;
+  filter: blur(2px);
+}
+
+/* ========= MOUNTAINS ========= */
+.mountain {
+  position: absolute;
+  bottom: 180px;
+  width: 120%;
+  height: 220px;
+  background: linear-gradient(#6f7fa3, #4e5f7a);
+  clip-path: polygon(
+    0% 100%, 10% 60%, 22% 80%, 35% 45%,
+    48% 75%, 62% 40%, 75% 70%, 90% 50%, 100% 100%
   );
 }
 
-/* hills drawn with SVG */
-svg {
+/* snow overlay */
+#snow {
+  position: absolute;
+  bottom: 330px;
+  width: 120%;
+  height: 120px;
+  background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0));
+  pointer-events: none;
+}
+
+/* ========= FOREST ========= */
+#forest {
+  position: absolute;
+  bottom: 120px;
+  width: 100%;
+  height: 120px;
+  background: repeating-linear-gradient(
+    90deg,
+    #1f3b2f,
+    #1f3b2f 6px,
+    #243f34 6px,
+    #243f34 12px
+  );
+}
+
+/* ========= MEADOW ========= */
+#meadow {
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 100%;
+  height: 140px;
+  background: linear-gradient(#5f8f6a, #3f6f56);
+  clip-path: polygon(0% 30%, 20% 20%, 40% 35%, 60% 15%, 80% 25%, 100% 20%, 100% 100%, 0% 100%);
 }
 
-/* ---------- EVENTS ---------- */
-#events {
-  height: 120px;
-  overflow-y: auto;
+/* ========= MAGIC GLOW ========= */
+.magic {
+  box-shadow: inset 0 0 40px rgba(120,180,255,0.25);
 }
+
+/* ========= EVENTS ========= */
+#events {
+  height: 140px;
+  padding: 12px 24px;
+  border-top: 1px solid rgba(120,180,255,0.25);
+  font-size: 14px;
+}
+
 </style>
 </head>
 
 <body>
 
+<!-- STATUS -->
 <div id="status" class="panel">
   <div>Tick: <span id="tick">0</span></div>
-  <div>Biome: Rolling Lowlands</div>
+  <div>Biome: Softlands</div>
+  <div>Energy: Stable</div>
+  <div>Magic: <span id="magicLabel">Low</span></div>
 </div>
 
+<!-- MAIN -->
 <div id="main">
+
+  <!-- LEVERS -->
   <div id="levers" class="panel">
-    <h3>Terrain Controls</h3>
+    <h3>World Levers</h3>
 
     <div class="lever">
-      <label>Hill Height</label>
-      <input type="range" min="20" max="120" value="60" id="heightControl">
+      <label>Time Flow</label>
+      <input id="timeFlow" type="range" min="1" max="5" value="2">
     </div>
 
     <div class="lever">
-      <label>Hill Roughness</label>
-      <input type="range" min="1" max="8" value="3" id="roughnessControl">
+      <label>Heat</label>
+      <input id="heat" type="range" min="0" max="100" value="50">
     </div>
 
-    <button onclick="generateHills()">Reshape Land</button>
+    <div class="lever">
+      <label>Magic Pressure</label>
+      <input id="magic" type="range" min="0" max="100" value="10">
+    </div>
+
+    <div class="lever">
+      <label>Human Adaptation</label>
+      <input type="range" min="0" max="100" value="30">
+    </div>
   </div>
 
+  <!-- WORLD -->
   <div id="world">
-    <svg id="terrain"></svg>
+    <div class="cloud" id="cloud1"></div>
+    <div class="cloud" id="cloud2"></div>
+
+    <div class="mountain"></div>
+    <div id="snow"></div>
+
+    <div id="forest"></div>
+    <div id="meadow"></div>
   </div>
+
 </div>
 
-<div id="events" class="panel" id="log">
-  • Biome formed.
+<!-- EVENTS -->
+<div id="events" class="panel">
+  • The Softlands rest quietly.
 </div>
 
 <script>
-const svg = document.getElementById("terrain");
-const log = document.getElementById("events");
-const heightControl = document.getElementById("heightControl");
-const roughnessControl = document.getElementById("roughnessControl");
-
 let tick = 0;
+const tickEl = document.getElementById("tick");
+const snow = document.getElementById("snow");
+const world = document.getElementById("world");
+const magicLabel = document.getElementById("magicLabel");
 
-function logEvent(text) {
-  log.innerHTML += `<br>• ${text}`;
-  log.scrollTop = log.scrollHeight;
-}
+const cloud1 = document.getElementById("cloud1");
+const cloud2 = document.getElementById("cloud2");
 
-function generateHills() {
-  const width = window.innerWidth - 240;
-  const height = window.innerHeight - 220;
-  const hillHeight = Number(heightControl.value);
-  const roughness = Number(roughnessControl.value);
+let c1x = -200;
+let c2x = 300;
 
-  let path = `M 0 ${height}`;
-
-  for (let x = 0; x <= width; x += 40) {
-    const y =
-      height -
-      hillHeight -
-      Math.sin(x / (120 / roughness)) * hillHeight * 0.6 -
-      Math.random() * hillHeight * 0.2;
-
-    path += ` L ${x} ${y}`;
-  }
-
-  path += ` L ${width} ${height} Z`;
-
-  svg.innerHTML = `
-    <path d="${path}" fill="#2f7d46" />
-  `;
-
-  logEvent("Land reshaped.");
-}
-
-setInterval(() => {
+function update() {
   tick++;
-  document.getElementById("tick").textContent = tick;
-}, 1000);
+  tickEl.textContent = tick;
 
-generateHills();
+  const timeFlow = +document.getElementById("timeFlow").value;
+  const heat = +document.getElementById("heat").value;
+  const magic = +document.getElementById("magic").value;
+
+  /* Snow line reacts to heat */
+  snow.style.bottom = `${280 + (50 - heat)}px`;
+
+  /* Clouds move with time */
+  c1x += 0.2 * timeFlow;
+  c2x += 0.1 * timeFlow;
+
+  if (c1x > window.innerWidth) c1x = -200;
+  if (c2x > window.innerWidth) c2x = -300;
+
+  cloud1.style.left = c1x + "px";
+  cloud2.style.left = c2x + "px";
+  cloud2.style.top = "110px";
+
+  /* Magic glow */
+  world.classList.toggle("magic", magic > 40);
+  magicLabel.textContent = magic > 40 ? "Rising" : "Low";
+}
+
+setInterval(update, 1000);
 </script>
 
 </body>
